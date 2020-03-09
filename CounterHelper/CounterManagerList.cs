@@ -4,24 +4,24 @@ using System.Threading;
 
 namespace CounterHelper
 {
+    /// <summary>
+    /// Used to manage the multiple Counters
+    /// </summary>
     public static class CounterManagerList
     {
-        public static List<CounterManager> counterManagerList = new List<CounterManager>();
+		#region Public Variables
+
+		public static List<CounterManager> counterManagerList = new List<CounterManager>();
 
         private static Thread[] threads;
 
-        public static void RunCounterListConsoleAsync()
-        {
-            threads = new Thread[counterManagerList.Count];
+		#endregion
 
-            for (var i = 0; i < counterManagerList.Count; i++)
-            {
-                var i1 = i;
-                threads[i] = new Thread(() => Helper.PrintCounter(counterManagerList[i1]));
-                threads[i].Start();
-            }
+		#region Public Methods
 
-        }
+        /// <summary>
+        /// Builds the needed threads to have each counter run on its own thread
+        /// </summary>
         public static void RunCounterListAsync()
         {
             threads = new Thread[counterManagerList.Count];
@@ -34,7 +34,10 @@ namespace CounterHelper
             }
         }
 
-        public static void StopAllCounters()
+        /// <summary>
+        /// Stops AND clears all counters regardless if they are paused
+        /// </summary>
+        public static void ForceStopAllCounters()
         {
             try
             {
@@ -54,7 +57,7 @@ namespace CounterHelper
             }
             counterManagerList.Clear();
         }
+
+        #endregion
     }
-
-
 }

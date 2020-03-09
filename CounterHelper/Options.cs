@@ -25,8 +25,6 @@ namespace CounterHelper
 
         public int? IterationLength { get; set; }
 
-        public bool? SendToDB { get; set; }
-
 		public string Units { get; set; }
 
         public Guid GuidValue => _guidValue.Equals(Guid.Empty) ? Helper.GetNewGuid() : _guidValue;
@@ -39,6 +37,10 @@ namespace CounterHelper
 
         #endregion
 
+        /// <summary>
+        /// Prints an easy to read list of properties for the calling Option
+        /// </summary>
+        /// <returns></returns>
         public string PrintOptions()
         {
             var isReadOnly = (ReadOnly is null) ? "True" : ReadOnly.Value.ToString();

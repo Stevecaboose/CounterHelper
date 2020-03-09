@@ -2,6 +2,9 @@
 
 namespace CounterHelper
 {
+    /// <summary>
+    /// An object that contains various pieces of data for a Counter object
+    /// </summary>
     public class CounterData
     {
         public string GUID { get; set; }

@@ -31,7 +31,7 @@ namespace UnitTests
             Thread.Sleep(1000);
             var secondValue = float.Parse(counterHelper.GetCounterValue());
 
-            CounterManagerList.StopAllCounters();
+            CounterManagerList.ForceStopAllCounters();
 
             // Assert
             Assert.IsTrue(firstValue > 0 && secondValue > 0);

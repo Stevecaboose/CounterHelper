@@ -7,9 +7,18 @@ using System.Threading;
 
 namespace CounterHelper
 {
+	/// <summary>
+	/// Static class that contains various useful methods
+	/// </summary>
 	public static class Helper
 	{
-		public static void GetAllCounters(string categoryFilter)
+		#region Public methods
+
+		/// <summary>
+		/// Prints all of the counters that are available to the specific machine it is being run on
+		/// </summary>
+		/// <param name="categoryFilter"></param>
+		public static void PrintAllAvailableCounters(string categoryFilter)
 		{
 			var categories = PerformanceCounterCategory.GetCategories();
 			foreach (var cat in categories)
@@ -47,6 +56,11 @@ namespace CounterHelper
 			}
 		}
 
+		/// <summary>
+		/// Gets a snapshot of all the counters that are running and builds a CounterData list based on each of the
+		/// Counter's values
+		/// </summary>
+		/// <returns>List of CounterData objects</returns>
 		public static List<CounterData> GetCounterData()
 		{
 			return CounterManagerList.counterManagerList.Select(counterManager => new CounterData()
@@ -69,6 +83,11 @@ namespace CounterHelper
 				.ToList();
 		}
 
+		/// <summary>
+		/// Gets the instance for a particular process
+		/// </summary>
+		/// <param name="processId">Process value</param>
+		/// <returns></returns>
 		public static string GetInstanceNameForProcessId(int processId)
 		{
 			var process = Process.GetProcessById(processId);
@@ -94,14 +113,24 @@ namespace CounterHelper
 			return null;
 		}
 
-		public static PerformanceCounter GetPerfCounterForProcessId(int processId, string processCounterName = "% Processor Time")
+		/// <summary>
+		/// Creates a new Counter based on the process and the Windows Performance Monitor Counter Name
+		/// </summary>
+		/// <param name="processId"> Process value</param>
+		/// <param name="processCounterName">Windows Performance Monitor Counter Name. 
+		/// Default value = "% Processor Time"</param>
+		/// <returns></returns>
+		public static PerformanceCounter GetPerformanceCounterForProcessId(int processId, string processCounterName = "% Processor Time")
 		{
 			string instance = GetInstanceNameForProcessId(processId);
 			return string.IsNullOrEmpty(instance) ? null : new PerformanceCounter("Process", processCounterName, instance);
 		}
 
-
-		public static void PrintCounter(CounterManager counter)
+		/// <summary>
+		/// Prints only the option name, counter name and counter value
+		/// </summary>
+		/// <param name="counter">Uses a CounterManager object to get the counter data</param>
+		public static void PrintMinimalCounter(CounterManager counter)
 		{
 			string counterLine;
 
@@ -129,6 +158,10 @@ namespace CounterHelper
 			}
 		}
 
+		/// <summary>
+		/// Gets all the Counter categories based on the machine it is running on
+		/// </summary>
+		/// <returns></returns>
 		public static PerformanceCounterCategory[] GetAllPerformanceCounterCategory()
 		{
 			try
@@ -147,6 +180,10 @@ namespace CounterHelper
 			return null;
 		}
 
+		/// <summary>
+		/// Gets all the counters from a list of categories
+		/// </summary>
+		/// <param name="performanceCounterCategories">List of PerformanceCounterCategory</param>
         public static void GetAllCountersForAllCategories(PerformanceCounterCategory[] performanceCounterCategories)
         {
             foreach (var category in performanceCounterCategories)
@@ -155,54 +192,70 @@ namespace CounterHelper
             }
         }
 
+		/// <summary>
+		/// Gets all the counters from a single category
+		/// </summary>
+		/// <param name="categoryName">string of the Category Name</param>
 		public static void GetAllCountersForACategory(string categoryName)
 		{
-
-			//Get all performance categories
 			PerformanceCounterCategory[] perfCats = PerformanceCounterCategory.GetCategories();
 
-			//Get single category by category name.
 			PerformanceCounterCategory cat = perfCats.FirstOrDefault(c => c.CategoryName == categoryName);
 			if (cat != null)
 			{
 				Console.WriteLine("Category Name: {0}", cat.CategoryName);
 
-				//Get all instances available for category
 				string[] instances = cat.GetInstanceNames();
+
 				if (instances.Length == 0)
 				{
-					//This block will execute when category has no instance.
-					//loop all the counters available within the category
 					foreach (PerformanceCounter counter in cat.GetCounters())
+					{
 						Console.WriteLine("     Counter Name: {0}", counter.CounterName);
+					}
 				}
 				else
 				{
-					//This block will execute when category has one or more instances.
 					foreach (string instance in instances)
 					{
 						Console.WriteLine("  Instance Name: {0}", instance);
 						if (cat.InstanceExists(instance))
-							//loop all the counters available within the category
+						{
 							foreach (PerformanceCounter counter in cat.GetCounters(instance))
 								Console.WriteLine("     Counter Name: {0}", counter.CounterName);
+						}
 					}
 				}
 			}
 		}
 
+		/// <summary>
+		/// Tests one Performance Counter for 10 iterations
+		/// </summary>
+		/// <param name="performanceCounter"></param>
 		public static void TestRunSinglePerformanceCounter(PerformanceCounter performanceCounter)
 		{
+			// Bind the PerformanceCounter to a manager
+			var manager = new CounterManager(performanceCounter);
+			string value = null;
+			var values = new List<string>();
+
 			performanceCounter.NextValue();
 			var count = 0;
 			while (count < 10)
 			{
+				value = manager.GetCounterValue();
 				Console.WriteLine(performanceCounter.NextValue());
+				values.Add(value);
 				Thread.Sleep(1000);
 				count++;
 			}
 		}
 
+		/// <summary>
+		/// Prints to the console the CounterSample of the counter in it's current state
+		/// </summary>
+		/// <param name="s"></param>
 		public static void OutputSample(CounterSample s)
 		{
 			Console.WriteLine("\r\n+++++++++++");
@@ -218,9 +271,15 @@ namespace CounterHelper
 			Console.WriteLine("++++++++++++++++++++++");
 		}
 
+		/// <summary>
+		/// Builds new GUID value. Used to uniquely identify counters in it's session
+		/// </summary>
+		/// <returns>new GUID value</returns>
 		public static Guid GetNewGuid()
 		{
 			return Guid.NewGuid();
 		}
+
+		#endregion
 	}
 }
