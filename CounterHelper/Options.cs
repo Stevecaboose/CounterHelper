@@ -10,15 +10,25 @@ namespace CounterHelper
         #region Public Properties
         
         public int Id { get; set; }
+
         public string Name { get; set; }
+
         public string CategoryName { get; set; }
+
         public string CounterName { get; set; }
+
         public string InstanceName { get; set; }
+
         public string MachineName { get; set; }
+
         public bool? ReadOnly { get; set; }
+
         public int? IterationLength { get; set; }
+
         public bool? SendToDB { get; set; }
+
 		public string Units { get; set; }
+
         public Guid GuidValue => _guidValue.Equals(Guid.Empty) ? Helper.GetNewGuid() : _guidValue;
 
         #endregion

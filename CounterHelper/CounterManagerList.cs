@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace CounterHelper
 {
@@ -12,6 +9,7 @@ namespace CounterHelper
         public static List<CounterManager> counterManagerList = new List<CounterManager>();
 
         private static Thread[] threads;
+
         public static void RunCounterListConsoleAsync()
         {
             threads = new Thread[counterManagerList.Count];

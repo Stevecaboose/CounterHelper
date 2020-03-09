@@ -1,14 +1,9 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Dynamic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace CounterHelper
 {
@@ -52,48 +47,16 @@ namespace CounterHelper
 			}
 		}
 
-		public static List<CounterData> GetCounterDataForDB()
-        {
-			List<CounterData> counterDataList = new List<CounterData>();
-
-			foreach (var counter in CounterManagerList.counterManagerList)
-			{
-				if ((bool)counter.options.SendToDB)
-				{
-					counterDataList.Add(new CounterData()
-					{
-						GUID = counter.guid.ToString(),
-						Name = counter.options.Name,
-						StartTime = counter._startTime,
-						LastUpdate = counter._lastUpdate,
-						FirstValue = counter._firstValue,
-						LastValue = counter._lastValue,
-						CategoryName = counter.options.CategoryName,
-						CounterName = counter.options.CounterName,
-						InstanceName = counter.options.InstanceName,
-						MachineName = counter.options.MachineName,
-						ReadOnly = counter.options.ReadOnly,
-						IterationLength = counter.options.IterationLength,
-						Units = counter.options.Units,
-						CounterHelp = counter.counterHelp
-					});
-				}
-
-			}
-
-			return counterDataList;
-        }
-
 		public static List<CounterData> GetCounterData()
 		{
 			return CounterManagerList.counterManagerList.Select(counterManager => new CounterData()
 			{
-				GUID = counterManager.guid.ToString(),
+				GUID = counterManager.GUID.ToString(),
 				Name = counterManager.options.Name,
-				StartTime = counterManager._startTime,
-				LastUpdate = counterManager._lastUpdate,
-				FirstValue = counterManager._firstValue,
-				LastValue = counterManager._lastValue,
+				StartTime = counterManager.StartTime,
+				LastUpdate = counterManager.LastUpdate,
+				FirstValue = counterManager.FirstValue,
+				LastValue = counterManager.LastValue,
 				CategoryName = counterManager.options.CategoryName,
 				CounterName = counterManager.options.CounterName,
 				InstanceName = counterManager.options.InstanceName,
@@ -101,7 +64,7 @@ namespace CounterHelper
 				ReadOnly = counterManager.options.ReadOnly,
 				IterationLength = counterManager.options.IterationLength,
 				Units = counterManager.options.Units,
-				CounterHelp = counterManager.counterHelp
+				CounterHelp = counterManager.CounterHelp
 			})
 				.ToList();
 		}
@@ -146,15 +109,15 @@ namespace CounterHelper
 			{
 				try
 				{
-					if (counter.CounterReady() && string.IsNullOrEmpty(counter._options.Name))
+					if (counter.CounterReady() && string.IsNullOrEmpty(counter.options.Name))
 					{
-						counterLine = counter._options.CategoryName + " \\ " + counter._options.CounterName + " : " +
+						counterLine = counter.options.CategoryName + " \\ " + counter.options.CounterName + " : " +
 									  counter.GetCounterValue();
 					}
 					else
 					{
-						counterLine = counter._options.Name + ": " + counter._options.CategoryName + " \\ " +
-									  counter._options.CounterName + " : " + counter.GetCounterValue();
+						counterLine = counter.options.Name + ": " + counter.options.CategoryName + " \\ " +
+									  counter.options.CounterName + " : " + counter.GetCounterValue();
 					}
 
 					Console.WriteLine(counterLine);

@@ -6,79 +6,76 @@ namespace CounterHelper
 {
 	public class CounterManager : ICounterManager
 	{
-
-		private PerformanceCounter _counter;
 		private readonly CounterSample initalCounterSample;
-		public string _firstValue;
-		public string _lastValue;
 		private int _iteration = 1000;
-		private string _name;
-		public DateTime _startTime = DateTime.Now;
-		public DateTime _lastUpdate;
-		public bool cancelCounter = false;
-		public Guid guid = Guid.NewGuid();
-		public string counterHelp;
+		private readonly string _name;
+		private bool cancelCounter = false;
+		private Guid _guid = Guid.NewGuid();
 
-		public Options _options;
+		public PerformanceCounter Counter { get; set; }
 
-		public PerformanceCounter Counter
+		public Guid GUID
 		{
-			get => _counter;
-			set => _counter = value;
+			get => _guid;
 		}
 
-		public Options options
-		{
-			get => _options;
-			set => _options = value;
+		public DateTime StartTime { get; set; } = DateTime.Now;
 
-		}
+		public DateTime LastUpdate { get; set; }
+
+		public string FirstValue { get; set; }
+
+		public string LastValue { get; set; }
+
+		public string CounterHelp { get; }
+
+		public Options options { get; set; }
 
 		public CounterManager(Options options)
 		{
-			if (_options == null)
+			if (this.options == null)
 			{
-				_options = options;
+				this.options = options;
 			}
 
-			_counter = new PerformanceCounter();
+			Counter = new PerformanceCounter();
 
-			if (!string.IsNullOrEmpty(_options.CategoryName))
+			if (!string.IsNullOrEmpty(this.options.CategoryName))
 			{
-				_counter.CategoryName = _options.CategoryName;
+				Counter.CategoryName = this.options.CategoryName;
 			}
 
-			if (!string.IsNullOrEmpty(_options.CounterName))
+			if (!string.IsNullOrEmpty(this.options.CounterName))
 			{
-				_counter.CounterName = _options.CounterName;
+				Counter.CounterName = this.options.CounterName;
 			}
 
-			if (!string.IsNullOrEmpty(_options.InstanceName))
+			if (!string.IsNullOrEmpty(this.options.InstanceName))
 			{
-				_counter.InstanceName = _options.InstanceName;
+				Counter.InstanceName = this.options.InstanceName;
 			}
 
-			_counter.MachineName = !string.IsNullOrEmpty(_options.MachineName) ? _options.MachineName : ".";
+			Counter.MachineName = !string.IsNullOrEmpty(this.options.MachineName) ? this.options.MachineName : ".";
 
-			_counter.ReadOnly = _options.ReadOnly ?? true;
+			Counter.ReadOnly = this.options.ReadOnly ?? true;
 
-			if (_options.IterationLength != null && _options.IterationLength > 0)
+			if (this.options.IterationLength != null && this.options.IterationLength > 0)
 			{
 				_iteration = options.IterationLength ?? 1000;
 			}
 
-			if (!string.IsNullOrEmpty(_options.Name))
+			if (!string.IsNullOrEmpty(this.options.Name))
 			{
-				_name = _options.Name;
+				_name = this.options.Name;
 			}
 
 			try
 			{
 				StartCounter();
-				_firstValue = GetCounterValue();
-				initalCounterSample = _counter.NextSample();
-				counterHelp = _counter.CounterHelp;
-				_lastUpdate = DateTime.Now;
+				FirstValue = GetCounterValue();
+				initalCounterSample = Counter.NextSample();
+				CounterHelp = Counter.CounterHelp;
+				LastUpdate = DateTime.Now;
 				Thread.Sleep(5000);
 			}
 			catch (Exception e)
@@ -99,19 +96,19 @@ namespace CounterHelper
 			if (cancelCounter) return null;
 			if (initalCounterSample.CounterType == PerformanceCounterType.ElapsedTime)
 			{
-				_firstValue = _lastValue;
-				var counterSample = _counter.NextSample();
-				_lastValue = DateTime.Now.Subtract(DateTime.FromFileTimeUtc(counterSample.RawValue).ToLocalTime())
+				FirstValue = LastValue;
+				var counterSample = Counter.NextSample();
+				LastValue = DateTime.Now.Subtract(DateTime.FromFileTimeUtc(counterSample.RawValue).ToLocalTime())
 					.ToString();
 			}
 			else
 			{
-				_firstValue = _lastValue;
-				_lastValue = _counter.NextValue().ToString();
+				FirstValue = LastValue;
+				LastValue = Counter.NextValue().ToString();
 			}
 
-			_lastUpdate = DateTime.Now;
-			return _lastValue;
+			LastUpdate = DateTime.Now;
+			return LastValue;
 
 		}
 

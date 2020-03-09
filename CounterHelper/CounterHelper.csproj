@@ -73,7 +73,6 @@
     <Compile Include="Helper.cs" />
     <Compile Include="ICounterManager.cs" />
     <Compile Include="Options.cs" />
-    <Compile Include="PerformanceCounterCategoryObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
