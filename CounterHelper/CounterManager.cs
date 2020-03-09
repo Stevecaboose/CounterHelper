@@ -171,7 +171,7 @@ namespace CounterHelper
 
 		/// <summary>
 		/// Sets the state of the Counter in a cancelled state
-		/// It will pause duiring this time
+		/// It will pause during this time
 		/// </summary>
 		public void StopCounter()
 		{
