@@ -8,10 +8,16 @@ namespace CounterHelper
 
         Options options { get; set; }
 
-        bool CounterReady();
-
         string GetCounterValue();
 
         void GetCounterValueForever();
+
+        void StartCounter();
+
+        void StopCounter();
+
+        bool GetStartStopState();
+
+        bool SetCounterAsReady();
     }
 }

@@ -29,7 +29,7 @@ namespace CounterHelper
             for (var i = 0; i < counterManagerList.Count; i++)
             {
                 var i1 = i;
-                threads[i] = new Thread(() => counterManagerList[i1].GetCounterValueForever());
+                threads[i] = new Thread(() => counterManagerList[i1].StartCounter());
                 threads[i].Start();
             }
         }

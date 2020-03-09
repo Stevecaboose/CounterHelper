@@ -138,7 +138,7 @@ namespace CounterHelper
 			{
 				try
 				{
-					if (counter.CounterReady() && string.IsNullOrEmpty(counter.options.Name))
+					if (counter.SetCounterAsReady() && string.IsNullOrEmpty(counter.options.Name))
 					{
 						counterLine = counter.options.CategoryName + " \\ " + counter.options.CounterName + " : " +
 									  counter.GetCounterValue();

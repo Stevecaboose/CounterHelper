@@ -14,7 +14,7 @@ namespace CounterHelper
 
 		private CounterSample initalCounterSample;
 		private int _iteration = 1000;
-		private string _name;
+		private readonly string _name;
 		private bool cancelCounter = false;
 		private Guid _guid = Guid.NewGuid();
 
@@ -95,6 +95,10 @@ namespace CounterHelper
 			{
 				Console.WriteLine(e);
 			}
+			finally
+			{
+
+			}
 
 		}
 
@@ -126,9 +130,9 @@ namespace CounterHelper
 		/// by the time it is ready to be used.
 		/// </summary>
 		/// <returns></returns>
-		public bool CounterReady()
+		public bool SetCounterAsReady()
 		{
-			Thread.Sleep(_iteration);
+			cancelCounter = false;
 			return true;
 		}
 
@@ -162,11 +166,12 @@ namespace CounterHelper
 		}
 
 		/// <summary>
-		/// Sets the state of the Counter in a non-cancelled state
+		/// Sets the state of the Counter in a non-cancelled state then runs the counter forever until terminated
 		/// </summary>
 		public void StartCounter()
 		{
 			cancelCounter = false;
+		
 		}
 
 		/// <summary>
@@ -176,6 +181,15 @@ namespace CounterHelper
 		public void StopCounter()
 		{
 			cancelCounter = true;
+		}
+
+		/// <summary>
+		/// Returns the state of the counter. It is either running or not
+		/// </summary>
+		/// <returns></returns>
+		public bool GetStartStopState()
+		{
+			return cancelCounter;
 		}
 
 		/// <summary>
@@ -207,8 +221,10 @@ namespace CounterHelper
 			initalCounterSample = Counter.NextSample();
 			CounterHelp = Counter.CounterHelp;
 			LastUpdate = DateTime.Now;
-			Thread.Sleep(5000);
 		}
+
+
+
 
 		#endregion
 	}
